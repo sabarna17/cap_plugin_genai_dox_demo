@@ -1,0 +1,87 @@
+{
+  "name": "cap_plugin_genai_dox_demo",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sap/cds": "^7",
+    "express": "^4",
+    "@cap-js/sqlite": "^1.7.1",
+    "cap_dox": "*"
+  },
+  "workspaces":["cap_dox"],
+  "devDependencies": {
+    "@sap/cds-dk": "^7",
+    "@sap/eslint-plugin-cds": "^3",
+    "@sap/ux-specification": "UI5-1.124",
+    "eslint": "^9",
+    "rimraf": "^5.0.5"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch-cap_plugin_genai_dox_demo": "cds watch --open cap_plugin_genai_dox_demo/webapp/index.html?sap-ui-xx-viewCache=false",
+    "undeploy": "cf undeploy cap_plugin_genai_dox_demo --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
+  },
+  "cds":{
+    "requires": {
+      "db":{
+        "kind": "sqlite",
+        "credentials": {
+          "database": "db/recipe.db"
+        }        
+      }
+    },
+    "auth":{
+      "kind": "basic",
+      "users": {
+        "sabarna17": {
+          "password": "1993"
+        }
+      }
+    },
+    "env":{
+      "cap_dox_key": {
+        "url": "https://aiservices-trial-dox.cfapps.us10.hana.ondemand.com",
+        "html5-apps-repo": {
+          "app_host_id": "a64bcab8-c7f6-4fb1-a185-58842a6bd6a2"
+        },
+        "uaa": {
+          "tenantmode": "shared",
+          "sburl": "https://internal-xsuaa.authentication.us10.hana.ondemand.com",
+          "subaccountid": "6a1afe9f-d4c4-4c13-8355-8d77852268e1",
+          "credential-type": "binding-secret",
+          "clientid": "sb-5ad77cbd-2a0c-4dba-9e95-b4ab4e2d0c48!b288416|dox-xsuaa-std-trial!b10844",
+          "xsappname": "5ad77cbd-2a0c-4dba-9e95-b4ab4e2d0c48!b288416|dox-xsuaa-std-trial!b10844",
+          "clientsecret": "ecad6d98-83a4-44dc-89bc-fe0f7debd29d$ee06QSBpPp4VVTg9ZNlerd9Rrvd5dfq5odgD-DCqz1U=",
+          "serviceInstanceId": "5ad77cbd-2a0c-4dba-9e95-b4ab4e2d0c48",
+          "url": "https://69e91dd6trial.authentication.us10.hana.ondemand.com",
+          "uaadomain": "authentication.us10.hana.ondemand.com",
+          "verificationkey": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn+4WCfUpLOf/Avfg/ecW\nnK4TgqULppflzPHu9Jn6/CeUskUB8Hnu+D68yZtq4JMmt8XT7BOziRX8tQV3V9fQ\ne3sQHZAYlWKlrmqnI4u/zeyELlDA7s+zEPLUDJ/yYEjBy6DWA4VuuKUCwolvMEdb\n0R/8Q5//k4F1lurvLxVDW18e0OBgJ2hXpzYs5h49FhW7JbhCKPO5ag9bmBV67mjM\nlI5O23NOQlC9tuOEXU+Bk2hVMZl0X7FTYvHNiaU37GO2Z6lXFgXHg0KBV77FpzWE\nXTPfiSaFx7z6ylXorlF+CxZQyRx8kTKXrJAHyjcsCwLBSqd2Le1cnc4ijF9QmVn1\nWwIDAQAB\n-----END PUBLIC KEY-----",
+          "apiurl": "https://api.authentication.us10.hana.ondemand.com",
+          "identityzone": "69e91dd6trial",
+          "identityzoneid": "6a1afe9f-d4c4-4c13-8355-8d77852268e1",
+          "tenantid": "6a1afe9f-d4c4-4c13-8355-8d77852268e1",
+          "zoneid": "6a1afe9f-d4c4-4c13-8355-8d77852268e1"
+        },
+        "swagger": "/document-information-extraction/v1/",
+        "saasregistryenabled": true,
+        "endpoints": {
+          "backend": {
+            "url": "https://aiservices-trial-dox.cfapps.us10.hana.ondemand.com",
+            "timeout": 30000
+          }
+        },
+        "sap.cloud.service": "com.sap.apps.documentinformationextraction",
+        "tenantuiurl": "https://69e91dd6trial.us10-trial.doc.cloud.sap"
+      }
+    }
+  },
+  "sapux": [
+    "app/cap_plugin_genai_dox_demo",
+    "app/cap_plugin_genai_dox_demo"
+  ]
+}

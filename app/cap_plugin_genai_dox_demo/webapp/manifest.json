@@ -1,0 +1,179 @@
+{
+  "_version": "1.59.0",
+  "sap.app": {
+    "id": "capplugingenaidoxdemo",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.13.5",
+      "toolsId": "c71bbca1-9dca-4bb3-bff5-55ff61183016"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/service/genai_dox_recipe/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "SO_FIORI-RECIPE_LIBRARY": {
+          "semanticObject": "SO_FIORI",
+          "action": "RECIPE_LIBRARY",
+          "title": "{{flpTitle}}",
+          "subTitle": "{{flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.124.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ushell": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "capplugingenaidoxdemo.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "RecipeList",
+          "target": "RecipeList"
+        },
+        {
+          "pattern": "Recipe({key}):?query:",
+          "name": "RecipeObjectPage",
+          "target": "RecipeObjectPage"
+        },
+        {
+          "pattern": "Recipe({key})/ingredients({key2}):?query:",
+          "name": "RecipeIngredientsObjectPage",
+          "target": "RecipeIngredientsObjectPage"
+        }
+      ],
+      "targets": {
+        "RecipeList": {
+          "type": "Component",
+          "id": "RecipeList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/Recipe",
+              "variantManagement": "Page",
+              "navigation": {
+                "Recipe": {
+                  "detail": {
+                    "route": "RecipeObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "RecipeObjectPage": {
+          "type": "Component",
+          "id": "RecipeObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/Recipe",
+              "navigation": {
+                "ingredients": {
+                  "detail": {
+                    "route": "RecipeIngredientsObjectPage"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "RecipeIngredientsObjectPage": {
+          "type": "Component",
+          "id": "RecipeIngredientsObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/Recipe/ingredients"
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  }
+}
