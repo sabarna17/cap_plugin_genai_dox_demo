@@ -43,8 +43,12 @@
         }
       }
     },
-    "env":{
-      "cap_dox_key": {
+    "cap_dox_map":{
+      "schemaId": "3b22757f-12a4-4950-be6b-7dac25a48b5a",  
+      "clientId": "default",  
+      "documentType": "custom"
+    },
+    "cap_dox_key": {
         "url": "https://aiservices-trial-dox.cfapps.us10.hana.ondemand.com",
         "html5-apps-repo": {
           "app_host_id": "a64bcab8-c7f6-4fb1-a185-58842a6bd6a2"
@@ -78,7 +82,7 @@
         "sap.cloud.service": "com.sap.apps.documentinformationextraction",
         "tenantuiurl": "https://69e91dd6trial.us10-trial.doc.cloud.sap"
       }
-    }
+    
   },
   "sapux": [
     "app/cap_plugin_genai_dox_demo",

@@ -9,9 +9,7 @@ entity Recipe : cuid, managed {
   @mandatory
   pdf : Binary @Core.MediaType : 'pdf' @Core.ContentDisposition.Filename : fileName;
   fileName : String(80) default 'recipe.pdf';
-
   ingredients: Composition of many RecipeIngredients on ingredients.recipe.ID = $self.ID;
-
 }
 
 entity RecipeIngredients : cuid,managed {
