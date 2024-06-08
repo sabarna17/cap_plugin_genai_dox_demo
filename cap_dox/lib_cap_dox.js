@@ -3,6 +3,7 @@ const FormData = require('form-data');
 const fs = require('fs');
 const cds = require('@sap/cds')
 const { Readable } = require('stream');
+const { log } = require("console");
 const cap_dox_key = cds.env.cap_dox_key
 const cap_dox_map = cds.env.cap_dox_map
 
@@ -49,7 +50,7 @@ async function get_token(){
       return response.data.access_token;
     })
     .catch((error) => {
-      console.log(error);
+      log(error);
     });
   return 'Bearer' + access_token;
 }
@@ -80,7 +81,39 @@ async function post_job(job_data, auth_token){
   return job_id;
 }
 
-async function get_job_status(job_id){
+async function get_job_status(job_id, auth_token){
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: cap_dox_key.endpoints.backend.url +  cap_dox_key.swagger + 'document/jobs/' + job_id,
+    headers: { 'Authorization': auth_token }
+  };
+
+  let job_id = '';
+  var retry_count = 0;
+  for(;;)
+  {
+    var job_details = await axios.request(config)
+    .then((response) => {
+      // let json_data = JSON.stringify(response.data)
+      log('JOB Status Data: ------------------>')
+      log(JSON.stringify(response.data));
+      return response.data;
+    })
+    .catch((error) => {
+      log(error);
+    });
+    if(job_details.status === 'DONE'){
+      return job_details
+    }
+    else{
+      setTimeout(1000);
+      retry_count = retry_count + 1;
+      if(retry_count > 20){
+        return job_details
+      }
+    }
+  }
 
 }
 
@@ -94,6 +127,8 @@ module.exports = {
     // POST document and fetch data from schema
     var job_id = await post_job(job_data, auth_token);
     // Assign SAP AI-DOX extracted data to the CDS ODATA Service entities
-    
+    var job_details = await get_job_status(job_id, auth_token);
+
+    log(job_details);
   }
 }
