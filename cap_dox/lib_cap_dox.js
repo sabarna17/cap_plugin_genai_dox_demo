@@ -24,13 +24,13 @@ async function setbody(pdf,fileName){
   fileName = './' + fileName;
   await createPdfFile(pdf, fileName);
   mydata.append('file', fs.createReadStream(fileName));  
-  mydata.append('options', str(cap_dox_map))
+  mydata.append('options', JSON.stringify(cap_dox_map, null, 2) )
+  log(mydata)
   return mydata
 }
 
 async function get_token(){
   var basic_auth = cap_dox_key.uaa.clientid + ':' + cap_dox_key.uaa.clientsecret
-  console.log(basic_auth)
   let config = {
     method: 'get',
     maxBodyLength: Infinity,
@@ -44,18 +44,18 @@ async function get_token(){
   let access_token = '';
   access_token = await axios.request(config)
     .then((response) => {
-      // let json_data = JSON.stringify(response.data)
       console.log('Oauth Token Fetched')
-      // console.log(JSON.stringify(response.data.access_token));
       return response.data.access_token;
     })
     .catch((error) => {
       log(error);
     });
-  return 'Bearer' + access_token;
+  return 'Bearer ' + access_token;
 }
 
-async function post_job(job_data, auth_token){
+async function post_job(pdf,fileName,auth_token){
+  // PDF file store in local
+  var job_data = await setbody(pdf,fileName);
   let config = {
     method: 'post',
     maxBodyLength: Infinity,
@@ -70,13 +70,12 @@ async function post_job(job_data, auth_token){
   let job_id = '';
   job_id = await axios.request(config)
     .then((response) => {
-      // let json_data = JSON.stringify(response.data)
-      console.log('JOB Post ID: ------------------>')
-      console.log(JSON.stringify(response.data.id));
+      log('JOB Post ID: ------------------>')
+      log(JSON.stringify(response.data.id));
       return response.data.id;
     })
     .catch((error) => {
-      console.log(error);
+      log(error);
     });
   return job_id;
 }
@@ -89,13 +88,11 @@ async function get_job_status(job_id, auth_token){
     headers: { 'Authorization': auth_token }
   };
 
-  let job_id = '';
   var retry_count = 0;
   for(;;)
   {
     var job_details = await axios.request(config)
     .then((response) => {
-      // let json_data = JSON.stringify(response.data)
       log('JOB Status Data: ------------------>')
       log(JSON.stringify(response.data));
       return response.data;
@@ -103,32 +100,32 @@ async function get_job_status(job_id, auth_token){
     .catch((error) => {
       log(error);
     });
-    if(job_details.status === 'DONE'){
-      return job_details
-    }
-    else{
-      setTimeout(1000);
-      retry_count = retry_count + 1;
-      if(retry_count > 20){
+    var job_status = job_details.status;
+    if(job_status){
+      if(job_status === 'DONE'){
         return job_details
+      }
+      else{
+        // await setTimeout(1000);
+        retry_count = retry_count + 1;
+        if(retry_count > 20){
+          return job_details
+        }
       }
     }
   }
-
 }
 
 module.exports = {
   post_pdf: async function (pdf, fileName) {
-    
-    // PDF file store in local
-    var job_data = await setbody(pdf,fileName);
     // GET latest Oauth2.0 token
     var auth_token = await get_token();
     // POST document and fetch data from schema
-    var job_id = await post_job(job_data, auth_token);
-    // Assign SAP AI-DOX extracted data to the CDS ODATA Service entities
-    var job_details = await get_job_status(job_id, auth_token);
+    var job_details = await post_job(pdf, fileName, auth_token);
+    return job_details;
+  },
+  get_job_status: await get_job_status(job_id, auth_token),
+  get_token: await get_token(),
+  
 
-    log(job_details);
-  }
 }
