@@ -106,7 +106,6 @@ async function get_job_status(job_id, auth_token){
         return job_details
       }
       else{
-        // await setTimeout(1000);
         retry_count = retry_count + 1;
         if(retry_count > 20){
           return job_details
@@ -116,16 +115,21 @@ async function get_job_status(job_id, auth_token){
   }
 }
 
-module.exports = {
-  post_pdf: async function (pdf, fileName) {
-    // GET latest Oauth2.0 token
-    var auth_token = await get_token();
-    // POST document and fetch data from schema
-    var job_details = await post_job(pdf, fileName, auth_token);
-    return job_details;
-  },
-  get_job_status: await get_job_status(job_id, auth_token),
-  get_token: await get_token(),
-  
+async function entity_mapping_def(dox_output, entity){
 
+}
+
+module.exports = {  
+  auth_token: async function() { 
+    await get_token();
+  },
+  post_job: async function(){
+    await post_job(pdf, fileName, auth_token)
+  },
+  get_job_status: async function(){
+    await get_job_status(job_id, auth_token);
+  }, 
+  entity_mapping: async function(dox_output, entity) {
+    await entity_mapping_def(dox_output, entity)
+  }
 }

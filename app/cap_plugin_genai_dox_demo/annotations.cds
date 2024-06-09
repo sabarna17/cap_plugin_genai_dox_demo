@@ -73,10 +73,11 @@ annotate service.RecipeIngredients with @(
             $Type : 'UI.DataField',
             Value : ingredients,
             Label : 'ingredients',
-        },{
+        },
+        {
             $Type : 'UI.DataField',
-            Value : portions,
-            Label : 'portions',
+            Value : quantity,
+            Label : 'quantity',
         },]
 );
 annotate service.RecipeIngredients with @(
@@ -99,10 +100,11 @@ annotate service.RecipeIngredients with @(
                 $Type : 'UI.DataField',
                 Value : ingredients,
                 Label : 'ingredients',
-            },{
+            },
+            {
                 $Type : 'UI.DataField',
-                Value : portions,
-                Label : 'portions',
+                Value : quantity,
+                Label : 'quantity',
             },],
     }
 );

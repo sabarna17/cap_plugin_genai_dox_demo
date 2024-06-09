@@ -16,6 +16,5 @@ entity RecipeIngredients : cuid,managed {
   recipe  : Association to Recipe;
   @mandatory
   ingredients  : String;
-  portions: String;
-
+  quantity: String;
 }
