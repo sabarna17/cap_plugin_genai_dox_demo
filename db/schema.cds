@@ -3,7 +3,7 @@ namespace genai_dox_recipe;
 using { managed, cuid } from '@sap/cds/common';
 
 entity Recipe : cuid, managed {
-  @mandatory
+  // @mandatory
   recipe_name  : String;
   portions: String;
   @mandatory

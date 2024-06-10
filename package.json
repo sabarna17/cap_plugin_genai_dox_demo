@@ -43,8 +43,8 @@
         }
       }
     },
-    "cap_dox_map":{
-      "schemaId": "3b22757f-12a4-4950-be6b-7dac25a48b5a",  
+    "cap_dox_config":{
+      "schemaName": "recipe_dev_challenge",
       "clientId": "default",  
       "documentType": "custom"
     },

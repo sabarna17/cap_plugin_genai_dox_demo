@@ -5,7 +5,7 @@ const cds = require('@sap/cds')
 const { Readable } = require('stream');
 const { log } = require("console");
 const cap_dox_key = cds.env.cap_dox_key
-const cap_dox_map = cds.env.cap_dox_map
+const cap_dox_config = cds.env.cap_dox_config
 
 async function createPdfFile(pdfBuffer, outputPath) {
   return new Promise((resolve, reject) => {
@@ -19,13 +19,18 @@ async function createPdfFile(pdfBuffer, outputPath) {
   });
 }
 
-async function setbody(pdf,fileName){
+async function setbody(pdf,fileName,auth_token){
   let mydata = new FormData();
   fileName = './' + fileName;
   await createPdfFile(pdf, fileName);
   mydata.append('file', fs.createReadStream(fileName));  
-  mydata.append('options', JSON.stringify(cap_dox_map, null, 2) )
-  log(mydata)
+  cap_dox_job = {
+    "schemaId": await get_schema(auth_token),
+    "clientId":cap_dox_config.clientId,
+    "documentType": cap_dox_config.documentType
+  }
+  mydata.append('options', JSON.stringify(cap_dox_job, null, 2) )
+  // log(mydata)
   return mydata
 }
 
@@ -40,7 +45,6 @@ async function get_token(){
       'Accept': 'application/json'
     }
   };
-
   let access_token = '';
   access_token = await axios.request(config)
     .then((response) => {
@@ -53,9 +57,37 @@ async function get_token(){
   return 'Bearer ' + access_token;
 }
 
+async function get_schema(auth_token){
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: cap_dox_key.endpoints.backend.url +  cap_dox_key.swagger + 'schemas?clientId=' + cap_dox_config.clientId,
+    headers: {
+      'Authorization': auth_token,
+      'Accept': 'application/json'
+    }
+  };
+
+  let schemaId = '';
+  schemaId = await axios.request(config)
+    .then((response) => {
+      for (let item of response.data.schemas){
+        // log('------------',item,'-------------',item.documentType)
+        if((item.name === cap_dox_config.schemaName) && (item.documentType === cap_dox_config.documentType)) {
+          return item.id;
+        } 
+      }
+    })
+    .catch((error) => {
+      log(error);
+  });
+  log('Schema ID: ', schemaId)
+  return schemaId;
+}
+
 async function post_job(pdf,fileName,auth_token){
   // PDF file store in local
-  var job_data = await setbody(pdf,fileName);
+  var job_data = await setbody(pdf,fileName,auth_token);
   let config = {
     method: 'post',
     maxBodyLength: Infinity,
@@ -91,6 +123,7 @@ async function get_job_status(job_id, auth_token){
   var retry_count = 0;
   for(;;)
   {
+    
     var job_details = await axios.request(config)
     .then((response) => {
       log('JOB Status Data: ------------------>')
@@ -106,8 +139,9 @@ async function get_job_status(job_id, auth_token){
         return job_details
       }
       else{
+        // await setTimeout(() =>{ console.log('5 seconds have passed!'); }, 5000);
         retry_count = retry_count + 1;
-        if(retry_count > 20){
+        if(retry_count > 100){
           return job_details
         }
       }
@@ -115,21 +149,44 @@ async function get_job_status(job_id, auth_token){
   }
 }
 
-async function entity_mapping_def(dox_output, entity){
+async function entity_mapping_head_def(headerFields, entity){
+  for(let item of headerFields){
+    entity[item.name] = item.rawValue
+  }
+  return entity
+}
 
+async function entity_mapping_item_def(lineItems, entity){
+  let ingredients = [];
+  let ingredient = {};
+  for(let item of lineItems){
+    for(let item_properties of item){
+      ingredient[item_properties.name] = item_properties.rawValue
+    }
+    ingredients.push(ingredient)
+  }
+  entity.ingredients = ingredients
+  // log(entity)
+  return entity
 }
 
 module.exports = {  
   auth_token: async function() { 
-    await get_token();
+    return await get_token();
   },
-  post_job: async function(){
-    await post_job(pdf, fileName, auth_token)
+  schema_id: async function(){
+    return await get_schema();
   },
-  get_job_status: async function(){
-    await get_job_status(job_id, auth_token);
+  post_job: async function(pdf, fileName, auth_token){
+    return await post_job(pdf, fileName, auth_token)
+  },
+  get_job_status: async function(job_id, auth_token){
+    return await get_job_status(job_id, auth_token);
   }, 
-  entity_mapping: async function(dox_output, entity) {
-    await entity_mapping_def(dox_output, entity)
-  }
+  entity_mapping_head: async function(dox_output, entity) {
+    await entity_mapping_head_def(dox_output, entity)
+  },
+  entity_mapping_item: async function(dox_output, entity) {
+    await entity_mapping_item_def(dox_output, entity)
+  }  
 }
