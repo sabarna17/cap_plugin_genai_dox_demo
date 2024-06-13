@@ -18,7 +18,7 @@ cds.once('served', async () => {
 
         if (cap_doxelements.length) {
           
-          srv.on('ai_dox_extract', entity, async data => {
+          srv.on('CREATE', entity, async data => {
           console.log(data.data)
           log("Starting CAP_DOX Extraction ")
           let auth_token = await cap_doxlib.auth_token();
