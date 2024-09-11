@@ -184,9 +184,9 @@ module.exports = {
     return await get_job_status(job_id, auth_token);
   }, 
   entity_mapping_head: async function(dox_output, entity) {
-    await entity_mapping_head_def(dox_output, entity)
+    return await entity_mapping_head_def(dox_output, entity)
   },
   entity_mapping_item: async function(dox_output, entity) {
-    await entity_mapping_item_def(dox_output, entity)
+    return await entity_mapping_item_def(dox_output, entity)
   }  
 }
