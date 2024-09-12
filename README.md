@@ -30,3 +30,7 @@ Learn more at https://cap.cloud.sap/docs/get-started/.
 # Schema in SAP AI - DOX PE: Document Information Extraction Service
 ![image](https://github.com/user-attachments/assets/d2d956c8-f518-4222-aabc-99c4ee5910fb)
 
+# Configure CAP-DOX package.json
+![image](https://github.com/user-attachments/assets/51b5ac06-763f-423c-a75d-5e12b4564e24)
+
+
