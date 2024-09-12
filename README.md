@@ -34,3 +34,7 @@ Learn more at https://cap.cloud.sap/docs/get-started/.
 ![image](https://github.com/user-attachments/assets/51b5ac06-763f-423c-a75d-5e12b4564e24)
 
 
+# Important CLI commands - 
+npm add -js/sqlite -D
+cds deploy --to sqlite:db/recipe.db
+cds watch
