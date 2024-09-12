@@ -34,6 +34,12 @@ annotate service.Recipe with @(
         },
         {
             $Type : 'UI.ReferenceFacet',
+            Label : 'Detailed Steps',
+            ID : 'DetailedSteps',
+            Target : '@UI.FieldGroup#DetailedSteps',
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
             Label : 'Ingredients',
             ID : 'Ingredients',
             Target : 'ingredients/@UI.LineItem#Ingredients',
@@ -42,25 +48,35 @@ annotate service.Recipe with @(
     UI.LineItem : [
         {
             $Type : 'UI.DataField',
-            Label : 'recipe_name',
+            Label : 'Recipe Name',
             Value : recipe_name,
         },
         {
             $Type : 'UI.DataField',
-            Label : 'portions',
+            Label : 'Portions',
             Value : portions,
         },
         {
             $Type : 'UI.DataField',
-            Label : 'pdf',
+            Label : 'Recipe Pdf',
             Value : pdf,
         },
         {
             $Type : 'UI.DataField',
-            Label : 'fileName',
+            Label : 'File Name',
             Value : fileName,
         },
     ],
+    UI.FieldGroup #DetailedSteps : {
+        $Type : 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type : 'UI.DataField',
+                Value : detailed_steps,
+                Label : 'Detailed Steps',
+            },
+        ],
+    },
 );
 
 annotate service.RecipeIngredients with @(
@@ -69,15 +85,11 @@ annotate service.RecipeIngredients with @(
             $Type : 'UI.DataField',
             Value : ID,
             Label : 'ID',
-        },{
-            $Type : 'UI.DataField',
-            Value : ingredients,
-            Label : 'ingredients',
         },
         {
             $Type : 'UI.DataField',
-            Value : quantity,
-            Label : 'quantity',
+            Value : ingredient,
+            Label : 'ingredient',
         },]
 );
 annotate service.RecipeIngredients with @(
@@ -96,15 +108,11 @@ annotate service.RecipeIngredients with @(
                 $Type : 'UI.DataField',
                 Value : ID,
                 Label : 'ID',
-            },{
-                $Type : 'UI.DataField',
-                Value : ingredients,
-                Label : 'ingredients',
             },
             {
                 $Type : 'UI.DataField',
-                Value : quantity,
-                Label : 'quantity',
+                Value : ingredient,
+                Label : 'ingredient',
             },],
     }
 );
