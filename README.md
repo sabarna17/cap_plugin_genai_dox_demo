@@ -36,5 +36,7 @@ Learn more at https://cap.cloud.sap/docs/get-started/.
 
 # Important CLI commands - 
 npm add -js/sqlite -D
+
 cds deploy --to sqlite:db/recipe.db
+
 cds watch
